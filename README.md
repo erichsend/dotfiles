@@ -69,7 +69,7 @@ Add secrets.zsh for any secret setup
 * sensible vim
 * fzf
 * vim-fugative
-
+* solarized theme (along with iterm2)
 
 **Customizations**
 - grep uses `rg`
@@ -81,5 +81,21 @@ Add secrets.zsh for any secret setup
 - uses ripgrep (`rg`) for base command
 
 
+
+### TODO
+
+- ohmyzsh vim plugin
+- vim fzf
+- vim navigation improvements
+- vim window managing improvement
+- tmux window managing improvement
+- tmux vim navigator
+- tmux plugins
+- gutentags / universal-tags
+- yaml editing/linting
+- typescript editing/linting
+- node debugging
+- go editing
+- go debugging
 
 

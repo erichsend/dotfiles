@@ -1,14 +1,11 @@
 # Scratchpads
-EDITOR=vim
 alias todo='$EDITOR ~/.todo'
 alias cc='$EDITOR ~/.cheatsheet'
 
 # Config
-alias zcfg='$EDITOR ~/.zshrc'
-alias shcfg='$EDITOR ~/.oh-my-zsh/custom/'
-alias vicfg='$EDITOR ~/.vimrc'
-alias tcfg='$EDITOR ~/.tmux.conf'
+alias dot='$EDITOR ~/repo/dotfiles/.'
 
 # Navigation
-alias vplug='cd ~/.vim'
-alias zdir='cd ~/.oh-my-zsh/custom'
+alias vd='cd ~/.vim'
+alias zd='cd ~/.oh-my-zsh/custom'
+alias td='cd ~/.tmux'
