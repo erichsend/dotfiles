@@ -57,7 +57,7 @@ Add secrets.zsh for any secret setup
 #### tmux
 
 * sensible tmux
-* tpm (owns `dotfiles/tmux/.tmux/` and initilized in `.tmux.conf`)
+* tpm (git submodule at `dotfiles/tmux/.tmux/plugins/tpm` and initilized in `.tmux.conf`)
 * tmux yank, ressurect, open, copycat plugins
 
 **Customizations**
