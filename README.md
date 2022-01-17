@@ -36,8 +36,8 @@ Delete the following files/folders to be replaced with symlinks
 
 Add Symlinks (assuming this repo is at ~/repo/dotfiles)
 * `ln -s ~/repo/dotfiles/tmux/.tmux.conf ~/.tmux.conf`
-* `ln -s ~/repo/dotfiles/zsh/.oh-my-zsh/custom ~/.oh-my-zsh/custom`
 * `ln -s ~/repo/dotfiles/zsh/.zshrc ~/.zshrc`
+* `ln -s ~/repo/dotfiles/zsh/.oh-my-zsh/custom ~/.oh-my-zsh/custom`
 
 Add secrets.zsh for any secret setup
 
