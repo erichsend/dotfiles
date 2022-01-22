@@ -1,0 +1,14 @@
+"Theme
+syntax enable
+set background=dark
+colorscheme solarized
+
+"Window Sizing
+noremap <C-w>+ :resize +5<CR>
+noremap <C-w>- :resize -5<CR>
+noremap <C-w>< :vertical:resize -5<CR>
+noremap <C-w>> :vertical:resize +5<CR>
+
+
+"Allow hidden buffers
+set hidden

@@ -1,6 +1,6 @@
-[submodule "zsh/.oh-my-zsh/custom/themes/powerlevel10k"]
-	path = zsh/.oh-my-zsh/custom/themes/powerlevel10k
+[submodule "zsh/oh-my-zsh/custom/themes/powerlevel10k"]
+	path = zsh/oh-my-zsh/custom/themes/powerlevel10k
 	url = https://github.com/romkatv/powerlevel10k.git
-[submodule "tmux/.tmux/plugins/tpm"]
-	path = tmux/.tmux/plugins/tpm
-	url = https://github.com/tmux-plugins/tpm
+[submodule "tmux/plugins/tpm"]
+	path = tmux/plugins/tpm
+	url = git@github.com:tmux-plugins/tpm.git

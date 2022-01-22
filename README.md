@@ -25,34 +25,51 @@ Must have the following in path:
 * 'rg'
 * `tmux`
 
-Also download/setup `oh-my-zsh`
+#### Setup oh-my-zsh
 
-#### Setup Symlinks
+Download/install oh-my-zsh, then
 
-Delete the following files/folders to be replaced with symlinks
-* `rm -rf ~/.oh-my-zsh/custom`
+```
+rm ~/.zshrc
+ln -s ~/repo/dotfiles/zsh/zshrc ~/.zshrc
+
+mv ~/.oh-my-zsh  ~/.config/oh-my-zsh
+
+rm -rf ~/.config/oh-my-zsh/custom
+ln -s ~/repo/dotfiles/zsh/oh-my-zsh/custom ~/.config/oh-my-zsh/custom
+
+exec zsh
+```
+
+Note: powerlevel10k config file not currently versioned. Will need configuration on first start.
+
+#### Setup Other Symlinks
+
+**TMUX**
 * `rm ~/.tmux.conf`
-* `rm ~/.zshrc`
+* `ln -s ~/repo/dotfiles/tmux ~/.config/tmux`
 
-Add Symlinks (assuming this repo is at ~/repo/dotfiles)
-* `ln -s ~/repo/dotfiles/tmux/.tmux.conf ~/.tmux.conf`
-* `ln -s ~/repo/dotfiles/zsh/.zshrc ~/.zshrc`
-* `ln -s ~/repo/dotfiles/zsh/.oh-my-zsh/custom ~/.oh-my-zsh/custom`
+**VIM** (doesn't support XDG_CONFIG_HOME)
+* `ln -s ~/repo/dotfiles/vim/vimrc ~/.vimrc`
+* `ln -s ~/repo/dotfiles/vim ~/.vim`
 
-Add secrets.zsh for any secret setup
+**K9s**
+* 'ln -s ~/repo/dotfiles/.k9s/themes/solarized-dark.yml ~/.k9s/themes/skin.yml'
 
 ### Configuration Notes
+
+Add secrets.zsh for any secret setup
 
 #### zsh
 
 * oh-my-zsh
 * powerlevel10k (git submodule)
 * not currently using a package manager
+* XDG_CONFIG_HOME set to `~/.config`
 
 **Customizations**
 - .zshrc is vanilla oh-my-zsh with powerlevel10k additions for instant prompt and configuration check (beginning and end of file)
-- .intputrc sets up vim bindings
-- Find other shell customizations in `dotfiles/.oh-my-zsh/custom/*.zsh`
+- Find other shell customizations in `dotfiles/oh-my-zsh/custom/*.zsh`
 
 #### tmux
 
@@ -80,12 +97,10 @@ Add secrets.zsh for any secret setup
 
 - uses ripgrep (`rg`) for base command
 
-
-
 ### TODO
 
 - ohmyzsh vim plugin
-- vim fzf
+- ensure proper filename find and file content pattern find
 - vim navigation improvements
 - vim window managing improvement
 - tmux window managing improvement

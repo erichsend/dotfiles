@@ -1,3 +1,9 @@
+# Fuzzy Setup
+if type rg &> /dev/null; then
+  export FZF_DEFAULT_COMMAND='rg --files --no-ignore-vcs --hidden'
+  export FZF_DEFAULT_OPTS='-m --height 50% --border'
+fi
+
 ####### Fuzzy Integrations
 
 #### Find File with Preview
