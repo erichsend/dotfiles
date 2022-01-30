@@ -19,12 +19,19 @@ k9s:
   clusters:
     arn:aws:eks:us-east-2:727954360595:cluster/eks-01:
       namespace:
-        active: all
+        active: default
         favorites:
-        - all
         - default
+        - konnect-preview-2595
+        - konnect-preview-2598
+        - konnect-preview-2605
+        - konnect-preview-2616
+        - konnect-preview-2619
+        - konnect-preview-2611
+        - konnect
+        - kauth-ephemeral
       view:
-        active: ingress
+        active: namespace
       featureGates:
         nodeShell: false
       shellPod:
