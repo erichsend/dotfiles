@@ -3,7 +3,8 @@ alias todo='$EDITOR ~/.todo'
 alias cc='$EDITOR ~/.cheatsheet'
 
 # Config
-alias dot='$EDITOR ~/repo/dotfiles/.'
+alias dot="$EDITOR ~/repo/dotfiles --cmd 'cd ~/repo/dotfiles'"
+
 
 # Navigation
 alias vd='cd ~/.vim'
