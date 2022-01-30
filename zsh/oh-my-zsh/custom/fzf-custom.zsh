@@ -1,7 +1,9 @@
 # Fuzzy Setup
 if type rg &> /dev/null; then
-  export FZF_DEFAULT_COMMAND='rg --files --no-ignore-vcs --hidden'
-  export FZF_DEFAULT_OPTS='-m --height 50% --border'
+  export FZF_DEFAULT_COMMAND='fd --type f --color=never --hidden --no-ignore-vcs'
+  export FZF_DEFAULT_OPTS='-m --height 50% --border --reverse'
+  export FZF_CTRL_T_COMMAND='$FZF_DEFAULT_COMMAND'
+  export FZF_ALT_C_COMMAND='fd --type d . --color=never --hidden --no-ignore-vcs'
 fi
 
 ####### Fuzzy Integrations
