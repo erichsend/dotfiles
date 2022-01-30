@@ -16,14 +16,24 @@ Goals
 
 #### Install Dependencies
 
-Must have the following in path:
+Basic Utilities:
 * `fzf`
-* `jira-cli`
-* `kube-ps1`
-* `kubectx`
-* `kubectl`
-* 'rg'
+* `rg`
 * `tmux`
+* `fd`
+
+Specific CLI-type tools
+* `kubectx`
+* `kube-ps1` [should remove this for powerlevel10k built ins]
+* `kubectl`
+* `kubens` 
+* `jira-cli`
+
+Other Dependencies
+- Java (OpenJDK + jenv)
+- Python3 (currently whichever is installed by brew)
+- Graphiz (for rendering puml)
+
 
 #### Setup oh-my-zsh
 
@@ -75,7 +85,7 @@ Add secrets.zsh for any secret setup
 
 * sensible tmux
 * tpm (git submodule at `dotfiles/tmux/.tmux/plugins/tpm` and initilized in `.tmux.conf`)
-* tmux yank, ressurect, open, copycat plugins
+* tmux yank plugin
 
 **Customizations**
 - prefix set to C-a
@@ -85,11 +95,13 @@ Add secrets.zsh for any secret setup
 
 * sensible vim
 * fzf
-* vim-fugative
-* solarized theme (along with iterm2)
+* solarized theme
+* puml previewing 
+  * plantuml-syntax
+  * open-browser.vim
+  * plantuml-previewer.vim
 
 **Customizations**
-- grep uses `rg`
 - easier navigation keybindings
 
 
@@ -98,6 +110,12 @@ Add secrets.zsh for any secret setup
 - uses ripgrep (`rg`) for base command
 
 ### TODO
+
+- vim replace grep?
+```
+set grepprg=rg\ --vimgrep\ --smart-case
+set grepformat=%f:%l:%c:%m,%f:%l:%m
+```
 
 - ohmyzsh vim plugin
 - ensure proper filename find and file content pattern find
