@@ -4,3 +4,6 @@
 [submodule "tmux/plugins/tpm"]
 	path = tmux/plugins/tpm
 	url = git@github.com:tmux-plugins/tpm.git
+[submodule "vim/pack/syntax/start/plantuml-syntax"]
+	path = vim/pack/syntax/start/plantuml-syntax
+	url = git@github.com:aklt/plantuml-syntax.git

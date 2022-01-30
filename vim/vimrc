@@ -9,6 +9,25 @@ noremap <C-w>- :resize -5<CR>
 noremap <C-w>< :vertical:resize -5<CR>
 noremap <C-w>> :vertical:resize +5<CR>
 
-
 "Allow hidden buffers
 set hidden
+
+" Turn off swap files
+set noswapfile
+
+" Send persistent undo to temp location	
+set undodir=~/.undovim
+set undofile
+
+"Use new regex engine (otherwise typescript syntax highlighting lags)
+set re=0
+
+"Statusline
+set statusline=
+set statusline+=%f\ %2*%m\ %1*%h
+set statusline+=%#warningmsg#
+"set statusline+=%{SyntasticStatuslineFlag()}
+"set statusline+=%{fugitive#statusline()}
+set statusline+=%*
+set statusline+=%r%=[%{&encoding}\ %{&fileformat}\ %{strlen(&ft)?&ft:'none'}]\ %12.(%c:%l/%L%)
+set laststatus=2
