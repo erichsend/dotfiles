@@ -1,4 +1,8 @@
+# Laptop-specific files
 secrets.zsh
 kong.zsh
 .netrwhist
 
+# Let TPM manage tmux plugin submodules
+tmux/plugins/**
+!tmux/plugins/tmp
