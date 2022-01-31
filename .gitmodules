@@ -10,6 +10,6 @@
 [submodule "vim/pack/packages/start/open-browser.vim"]
 	path = vim/pack/packages/start/open-browser.vim
 	url = git@github.com:tyru/open-browser.vim.git
-[submodule "vim/pack/packages/start/plantuml-previewer.vim"]
-	path = vim/pack/packages/start/plantuml-previewer.vim
-	url = git@github.com:weirongxu/plantuml-previewer.vim.git
+[submodule "vim/pack/packages/start/vim-tmux-navigator"]
+	path = vim/pack/packages/start/vim-tmux-navigator
+	url = git@github.com:christoomey/vim-tmux-navigator.git
