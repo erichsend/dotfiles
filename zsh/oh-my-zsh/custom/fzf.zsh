@@ -1,3 +1,6 @@
+# Set mode to vim prior to running fzf
+bindkey -v
+
 # Setup fzf
 # ---------
 if [[ ! "$PATH" == */opt/homebrew/opt/fzf/bin* ]]; then
