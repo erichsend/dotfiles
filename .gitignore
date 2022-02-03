@@ -4,6 +4,7 @@ jenv.zsh
 kong.zsh
 secrets.zsh
 volta.zsh
+k9s/config.yml
 
 # Let TPM manage tmux plugin submodules
 tmux/plugins/**
