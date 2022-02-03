@@ -28,6 +28,8 @@ Specific CLI-type tools
 * `kubectl`
 * `kubens` 
 * `jira-cli`
+* `k9s`
+* `plantuml` (brings a lot of dependencies via homebrew)
 
 Other Dependencies
 - Java (OpenJDK + jenv)
@@ -85,7 +87,8 @@ Add secrets.zsh for any secret setup
 
 * sensible tmux
 * tpm (git submodule at `dotfiles/tmux/.tmux/plugins/tpm` and initilized in `.tmux.conf`)
-* tmux yank plugin
+* tmux copycat plugin (should replace with bindings for native regex search)
+* tmux open
 
 **Customizations**
 - prefix set to C-a
