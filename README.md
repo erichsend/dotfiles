@@ -60,6 +60,7 @@ Note: powerlevel10k config file not currently versioned. Will need configuration
 **TMUX**
 * `rm ~/.tmux.conf`
 * `ln -s ~/repo/dotfiles/tmux ~/.config/tmux`
+* `ln -s ~/repo/dotfiles/tmuxp ~/.config/tmuxp`
 
 **VIM** (doesn't support XDG_CONFIG_HOME)
 * `ln -s ~/repo/dotfiles/vim/vimrc ~/.vimrc`
