@@ -19,23 +19,21 @@ Goals
 Basic Utilities:
 * `fzf`
 * `rg`
-* `tmux`
 * `fd`
+* `jq`
 
 Specific CLI-type tools
-* `kubectx`
-* `kube-ps1` [should remove this for powerlevel10k built ins]
 * `kubectl`
-* `kubens` 
+* `kubectx/kubens`
 * `jira-cli`
 * `k9s`
 * `plantuml` (brings a lot of dependencies via homebrew)
+* `volta`
 
 Other Dependencies
 - Java (OpenJDK + jenv)
 - Python3 (currently whichever is installed by brew)
 - Graphiz (for rendering puml)
-
 
 #### Setup oh-my-zsh
 
@@ -76,12 +74,12 @@ Add secrets.zsh for any secret setup
 #### zsh
 
 * oh-my-zsh
-* powerlevel10k (git submodule)
+* powerlevel10k (git submodule) -- Using built-in vi_mode!
 * not currently using a package manager
 * XDG_CONFIG_HOME set to `~/.config`
 
 **Customizations**
-- .zshrc is vanilla oh-my-zsh with powerlevel10k additions for instant prompt and configuration check (beginning and end of file)
+- .zshrc is fairly vanilla oh-my-zsh with powerlevel10k additions for instant prompt and configuration check (beginning and end of file)
 - Find other shell customizations in `dotfiles/oh-my-zsh/custom/*.zsh`
 
 #### tmux
@@ -90,6 +88,7 @@ Add secrets.zsh for any secret setup
 * tpm (git submodule at `dotfiles/tmux/.tmux/plugins/tpm` and initilized in `.tmux.conf`)
 * tmux copycat plugin (should replace with bindings for native regex search)
 * tmux open
+* tmux-vim-navigator
 
 **Customizations**
 - prefix set to C-a
@@ -100,14 +99,11 @@ Add secrets.zsh for any secret setup
 * sensible vim
 * fzf
 * solarized theme
-* puml previewing 
-  * plantuml-syntax
-  * open-browser.vim
-  * plantuml-previewer.vim
+* open-browser.vim
+* tmux-vim-navigator
 
 **Customizations**
 - easier navigation keybindings
-
 
 #### fzf
 
@@ -115,24 +111,52 @@ Add secrets.zsh for any secret setup
 
 ### TODO
 
+- replace tmux copycat with saved searches
+
 - vim replace grep?
 ```
 set grepprg=rg\ --vimgrep\ --smart-case
 set grepformat=%f:%l:%c:%m,%f:%l:%m
 ```
 
-- ohmyzsh vim plugin
-- ensure proper filename find and file content pattern find
-- vim navigation improvements
-- vim window managing improvement
-- tmux window managing improvement
-- tmux vim navigator
-- tmux plugins
-- gutentags / universal-tags
+- vim keybindings:
+  - gfiles/files
+  - buffer navigation (flying)
+  - split management
+  - tab management
+
+- vim surround
+
+- CoC
 - yaml editing/linting
 - typescript editing/linting
 - node debugging
 - go editing
 - go debugging
 
+- tmuxp workspaces
+
+### Mac-only restore note
+
+```
+❯ brew leaves
+ankitpokhrel/jira-cli/jira-cli
+awscli
+fd
+fzf
+gnupg
+go
+httpie
+jenv
+jq
+k9s
+kubectx
+md5sha1sum
+plantuml
+pre-commit
+ripgrep
+saml2aws
+tmuxp
+volta
+```
 
