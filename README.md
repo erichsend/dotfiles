@@ -120,8 +120,7 @@ set grepformat=%f:%l:%c:%m,%f:%l:%m
 ```
 
 - vim keybindings:
-  - gfiles/files
-  - buffer navigation (flying)
+  - fzf: gfiles/files/buffers
   - split management
   - tab management
 
