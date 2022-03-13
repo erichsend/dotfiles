@@ -13,3 +13,9 @@
 [submodule "vim/pack/packages/start/vim-tmux-navigator"]
 	path = vim/pack/packages/start/vim-tmux-navigator
 	url = git@github.com:christoomey/vim-tmux-navigator.git
+[submodule "vim/pack/packages/start/coc.nvim"]
+	path = vim/pack/packages/start/coc.nvim
+	url = git@github.com:neoclide/coc.nvim.git
+[submodule "vim/pack/packages/start/fugitive"]
+	path = vim/pack/packages/start/fugitive
+	url = git@github.com:tpope/vim-fugitive.git
