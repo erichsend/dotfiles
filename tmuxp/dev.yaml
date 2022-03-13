@@ -1,0 +1,20 @@
+session_name: '${REPO}'
+start_directory: '~/repo/${REPO}'
+global_options:
+  automatic-rename: off
+windows:
+- window_name: edit
+  layout: c47f,214x55,0,0[214x27,0,0,0,214x27,0,28{107x27,0,28,1,106x27,108,28,2}]
+  focus: 'true'
+  options: {}
+  panes:
+  - focus: 'true'
+    shell_command: vim
+  - git --no-pager log --oneline -n 10
+  - git status
+- layout: 533f,245x59,0,0{72x59,0,0,6,81x59,73,0,7,90x59,155,0,8}
+  panes:
+  - 
+  - 
+  - 
+  window_name: run
