@@ -19,8 +19,9 @@ function _jiraSearchLoop() {
     _jira_cmd="jira $1 -q '$2' --plain --columns key,type,status,assignee,summary | fzf --height 100% --border --color 'border:$3' | cut -f 1"
     _key=$(eval $_jira_cmd)
     if [ -z "$_key"  ]; then break; fi
-    tmux send -t right "clear" Enter \
-  	  "jira issue view $_key --plain" Enter
+    tmux send -t right "q" Enter "clear" Enter \
+          "jirepl $_key" Enter
+    tmux select-pane -t right
   done
   clear
 }
@@ -76,6 +77,9 @@ alias jssr="jiraCurrentSprintList 'status in (\"In Review\")'"
 
 # Sprint Items in Verification
 alias jssv="jiraCurrentSprintList 'status in (\"In Verification\")'"
+
+# Sprint Items in Progress
+alias jssm="jiraCurrentSprintList 'assignee = 61b8ce29401429007007bc36'"
 
 # Sprint Items in Progress
 alias jssp="jiraCurrentSprintList 'status in (\"In Progress\")'"
