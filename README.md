@@ -27,13 +27,7 @@ Specific CLI-type tools
 * `kubectx/kubens`
 * `jira-cli`
 * `k9s`
-* `plantuml` (brings a lot of dependencies via homebrew)
 * `volta`
-
-Other Dependencies
-- Java (OpenJDK + jenv)
-- Python3 (currently whichever is installed by brew)
-- Graphiz (for rendering puml)
 
 #### Setup oh-my-zsh
 
