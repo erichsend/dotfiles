@@ -17,28 +17,12 @@ windows:
     shell_command: jira issue list
   - 
   window_name: jira
-- layout: 533f,245x59,0,0{72x59,0,0,6,81x59,73,0,7,90x59,155,0,8}
+- window_name: note
   panes:
-  - 
-  - 
-  - 
-  window_name: http
-- layout: 094c,245x59,0,0{82x59,0,0,9,76x59,83,0,10,85x59,160,0,11}
+  - lvim
+  start_directory: '~/notes'
+- window_name: scratch
   panes:
   -
-  - 
-  - 
-  start_directory: '~/runtimes'
-  window_name: runtimes
-- layout: 6a41,245x59,0,0,12
-  panes:
-  - vim
-  start_directory: '~/notes'
-  window_name: notes
-- layout: 9050,245x59,0,0{142x59,0,0,13,102x59,143,0,14}
-  panes:
-  - focus: 'true'
-    shell_command: dot
-  - 
-  start_directory: '~/repo/dotfiles'
-  window_name: dotfiles
+  start_directory: '~/scratch/'
+
