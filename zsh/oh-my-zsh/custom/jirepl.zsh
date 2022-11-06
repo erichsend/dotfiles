@@ -15,18 +15,16 @@ function jirepl() {
     v) jira issue view $issue --plain;;
 
     # Quick-Change Commands
-    A) echo "Adding Component: kong-auth-elements" && jira issue edit $issue -Ckong-auth-elements --no-input ;;
-    B) echo "Adding Component: konnect-backend" && jira issue edit $issue -Ckonnect-backend --no-input ;;
-    C) echo "Adding Component: cx-admin-tool" && jira issue edit $issue -Cadmin-cx-tool --no-input ;;
-    K) echo "Ading Component: kongponents" && jira issue edit $issue -Ckongponents --no-input ;;
-    L) echo "Adding Label: wont-do" && jira issue edit $issue -lwont-do --no-input ;;
+    A) echo "Adding Component: admin-cx-tool" && jira issue edit $issue -Cadmin-cx-tool --no-input ;;
+    B) echo "Adding Component: billing-provisioning" && jira issue edit $issue -Cbilling-provisioning --no-input ;;
+    D) echo "Adding Label: deprioritized" && jira issue edit $issue -ldeprioritize --no-input ;;
+    G) echo "Ading Component: kongponents" && jira issue edit $issue -Ckongponents --no-input ;;
+    K) echo "Adding Component: konnect-backend" && jira issue edit $issue -Ckonnect-backend --no-input ;;
     N) echo "Adding Label: needs-refinement" && jira issue edit $issue -lneeds-refinement --no-input ;;
-    P) echo "Adding Component: billing-provisioning" && jira issue edit $issue -Cbilling-provisioning --no-input ;;
+    P) echo "Adding Label: prioritized" && jira issue edit $issue -lprioritize --no-input ;;
     R) echo "Adding Component: runtime-manager" && jira issue edit $issue -Cruntime-manager --no-input ;;
     S) echo "Adding Component: service-hub" && jira issue edit $issue -Cservice-hub --no-input ;;
-    T) echo "Adding Component: users-teams" && jira issue edit $issue -Cusers-teams --no-input ;;
     U) echo "Adding Component: konnect-ui" && jira issue edit $issue -Ckonnect-ui --no-input ;;
-    V) echo "Adding Label: needs-validation" && jira issue edit $issue -lneeds-validation --no-input ;;
 
     # TMUX Commands 
     1) #echo "open parent (needs to send parent from context)" ;;
