@@ -1,41 +1,47 @@
-# Simple loop wrapper around jira-cli
-# Consider passing in the parent if known, and the type...
+#!/bin/zsh
+
+function _popList() {
+  _result=$(head -n 1 $LIST_FILE)
+  sed -i.bak '1d' $LIST_FILE && rm $LIST_FILE.bak
+  echo $_result
+}
+
 function jirepl() {
-  issue=$1
-  parent=$2
   clear
-  jira issue view $issue --plain
-  if [ -z "$parent"  ]; then echo "This issue does not have a parent"; else echo "This issue has a parent: $parent"; fi;
-  while echo "What's Next for ${issue}?" && read -sk && [[ $REPLY != q ]]; do echo $REPLY && case $REPLY in
+  LIST_FILE=$1
+  line=$(_popList)
+  key=$(cut -f 1 <<< $line)
+  echo "\n\n${Blue}Current Ticket:\n${BIBlue}$line\n\n${Color_Off}"
+  while echo "${BWhite}Choose an action\n${Color_Off}" && read -sk && [[ $REPLY != q ]]; do case $REPLY in
     # Change current issue
-    a) jira issue assign $issue;;
-    e) jira issue edit $issue;;
-    m) jira issue move $issue;;
-    o) jira open $issue;;
-    v) jira issue view $issue --plain;;
+    a) jira issue assign $key;;
+    e) jira issue edit $key;;
+    m) jira issue move $key;;
+    o) jira open $key;;
+    v) jira issue view $key --plain;;
 
     # Quick-Change Commands
-    A) echo "Adding Component: admin-cx-tool" && jira issue edit $issue -Cadmin-cx-tool --no-input ;;
-    B) echo "Adding Component: billing-provisioning" && jira issue edit $issue -Cbilling-provisioning --no-input ;;
-    D) echo "Adding Label: deprioritized" && jira issue edit $issue -ldeprioritize --no-input ;;
-    G) echo "Ading Component: kongponents" && jira issue edit $issue -Ckongponents --no-input ;;
-    K) echo "Adding Component: konnect-backend" && jira issue edit $issue -Ckonnect-backend --no-input ;;
-    N) echo "Adding Label: needs-refinement" && jira issue edit $issue -lneeds-refinement --no-input ;;
-    P) echo "Adding Label: prioritized" && jira issue edit $issue -lprioritize --no-input ;;
-    R) echo "Adding Component: runtime-manager" && jira issue edit $issue -Cruntime-manager --no-input ;;
-    S) echo "Adding Component: service-hub" && jira issue edit $issue -Cservice-hub --no-input ;;
-    U) echo "Adding Component: konnect-ui" && jira issue edit $issue -Ckonnect-ui --no-input ;;
+    # Consider making the component add be a function, and having it remove other components.
+    # Consider adding to a 'history' array to display on next issue
+    A) echo "Adding Component: admin-cx-tool" && jira issue edit $key -Cadmin-cx-tool --no-input ;;
+    B) echo "Adding Component: billing-provisioning" && jira issue edit $key -Cbilling-provisioning --no-input ;;
+    D) echo "Adding Label: deprioritized" && jira issue edit $key -ldeprioritize --no-input ;;
+    K) echo "Adding Component: konnect-backend" && jira issue edit $key -Ckonnect-backend --no-input ;;
+    N) echo "Adding Label: needs-refinement" && jira issue edit $key -lneeds-refinement --no-input ;;
+    P) echo "Adding Label: prioritized" && jira issue edit $key -lprioritize --no-input ;;
+    R) echo "Adding Component: runtime-manager" && jira issue edit $key -Cruntime-manager --no-input ;;
+    S) echo "Adding Component: service-hub" && jira issue edit $key -Cservice-hub --no-input ;;
+    U) echo "Adding Component: konnect-ui" && jira issue edit $key -Ckonnect-ui --no-input ;;
 
     # TMUX Commands 
-    1) #echo "open parent (needs to send parent from context)" ;;
-       if [ -z "$parent"  ]; 
-         then echo "Cannot open parent - Issue does not have a Parent Key";
-         else remoteJimux "b" && break  
-       fi ;;
-    2) echo "open siblings in left nav (needs to send parent from context)" ;;
-    3) echo "open children in left nav" ;;
-    ## Epic Workflow: Search epics. Choose epic. (3) shows stories. Choose story. (3) shows subtasks. Select subtask. (1) goes back to story. (2) shows other stories in epic. (1) goes back to epic. 
-    x) remoteJimux "b" && break ;;
+    x) 
+      line=$(_popList)
+      key=$(cut -f 1 <<< $line)
+      clear
+      echo "\n\nCurrent Ticket >>> $line\n"
+      tmux send -t left "s"
+      ;;
+    # x) remoteJimux "b" && break ;;
     *) echo "Try again..." ;;
     esac
   done
