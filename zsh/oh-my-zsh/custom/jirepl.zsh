@@ -39,9 +39,8 @@ function jirepl() {
       key=$(cut -f 1 <<< $line)
       clear
       echo "\n\nCurrent Ticket >>> $line\n"
-      tmux send -t left "s"
+      remoteRefresh
       ;;
-    # x) remoteJimux "b" && break ;;
     *) echo "Try again..." ;;
     esac
   done

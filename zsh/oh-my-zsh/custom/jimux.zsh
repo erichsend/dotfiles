@@ -168,10 +168,8 @@ function jimux2() {
 # Just doing this to keep all of the tmux commands in one file.
 #########
 # Assumes we are already in a side-by-side jimux/jrepl split
-function remoteJimux() {
-  tmux select-pane -t left
-  tmux send -t left C-c
-  tmux send -t left C-c "jimux $@" Enter
+function remoteRefresh() {
+  tmux send -t left "s"
 }
 
 ######
@@ -188,75 +186,4 @@ function jiraQuickEpicSearch() {
  _iss=$(eval $_jira_cmd)
  jiraEpicIssueList $_iss
 }
-
-####################################
-#  Search loops for specific issue #
-#  collections                     #
-#  $1 should be an issue key       #
-#  $2 should be a JQL              #
-####################################
-
-# Do we need these? Seems like the thing calling this could send the jql right to loop since we
-# only want issue+jql searches.
-
-# add one of these for "stories with same parent as passed in issue"
-# Needs to take in originalSearchContect
-function jiraIssueSiblingList() {
-  _jiraSearchLoop "issue list $1" "$2" "$_subtask_border"
-}
-
-# These need to forward the originalSearchContect
-# This should be rewritten to use issue list with -P=epic
-function jiraEpicIssueList() {
-  _jiraSearchLoop "epic list $1" "$2" "$_epic_issue_border"
-}
-
-# These need to forward the originalSearchContect
-function jiraIssueSubtaskList() {
-  _jiraSearchLoop "issue list -P $1" "$2" "$_subtask_border"
-}
-
-####################################
-# Search loops without issue keys  #
-# To be re-used with different JQL #
-# $1 should be JQL                 #
-####################################
-# Deprecate
-function jiraCurrentSprintList() {
-  _jiraSearchLoop "sprint list --current" "$1" "$_sprint_issue_border"
-}
-
-#Deprecate
-function jiraEpicsList() {
-  _jiraSearchLoop "epic list --table" "$1" "$_epic_border"
-}
-
-##########################
-# Search Aliases         #
-# mnemonic:              #
-# js*  (jira search *)   #
-########################## 
-
-##### Sprints #####
-# Unfinished stories or tasks in current (s)print
-alias jss="jiraCurrentSprintList 'type in (Story, Task) AND status not in (Resolved, Done)'" 
-
-# Current (s)print Items in (r)eview
-alias jssr="jiraCurrentSprintList 'status in (\"In Review\")'"
-
-# Sprint Items in Verification
-alias jssv="jiraCurrentSprintList 'status in (\"In Verification\")'"
-
-# Sprint Items in Progress
-alias jssm="jiraCurrentSprintList 'assignee = 61b8ce29401429007007bc36'"
-
-# Sprint Items in Progress
-alias jssp="jiraCurrentSprintList 'status in (\"In Progress\")'"
-
-##### Epics #####
-# All (e)pics in default project that are not resolved or done
-alias jse="jiraEpicsList 'status not in (Resolved, Done)'"
-
-# All helium epics
-alias jseh="jiraEpicsList 'status not in (Resolved, Done) AND labels in (helium, hydrogen)'"
 
