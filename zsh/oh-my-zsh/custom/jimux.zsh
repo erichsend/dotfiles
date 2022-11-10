@@ -140,27 +140,17 @@ function _jiraSearchLoopCache() {
   done
 }
 
-# others could be 'refine triage' for needs refinement, etc
 function jiraIssueBacklogTriage() {
 	_jiraSearchLoopCache "type in standardIssueTypes() AND type != Epic AND statusCategory != Done AND (component not in (billing-provisioning, runtime-manager, admin-cx-tool, service-hub, konnect-backend, konnect-ui, users-teams, kongponents, kong-auth-elements) OR component is EMPTY) AND project = KHCP"
 }
 
-function jimux2() {
+function jimux() {
   # Reset the window
   clear
   tmux kill-pane -a
-  tmux split-window -h -l 65%
+  tmux split-window -h -l 55%
   tmux select-pane -t left
-  if [[ $1 == "b" ]]; then 
-    jiraIssueBacklogTriage
-  elif [[ $1 == "p" ]]; then
-    echo "change this to check for a khcp key, open jirepl on right with parent. Do not change left sidebar (have a jimux function that simply kills jrepl, opens the new ticket in jrepl, and and adds it to the jrepl stack)"
-  else
-    echo "Pick a search: (b)acklog" && read -sk
-    case $REPLY in
-      b) jiraIssueBacklogTriage;;
-    esac
-  fi
+  jiraIssueBacklogTriage
 }
 
 ####### -- This should be changed to probably be some kind of List Reload and restart repl
