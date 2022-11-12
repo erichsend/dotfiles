@@ -1,6 +1,8 @@
 #!/bin/zsh
-# Is it bad? Yes. Does it work? Yes.
-LIST_FILE="$HOME/.config/.jira/.jimux.tmp"
+JIMUX_DIR="$XDG_CONFIG_HOME/jimux"
+LIST_FILE_BASE="$JIMUX_DIR/jimux-list"
+LOG_FILE_BASE="$JIMUX_DIR/jimux-log"
+JIMUX_CONFIG_FILE="$JIMUX_DIR/jimux.conf" 
 
 JIRPL_USAGE=$(cat <<-END
 # Interactive Commands
@@ -39,11 +41,11 @@ function _getParent() {
 }
 
 function _searchHistory() {
-  tmux display-popup "tail -r $LIST_FILE.log | fzf"
+  tmux display-popup "tail -r $LOG_FILE | fzf"
 } 
 
 function _loadList() {
-  local _jira_cmd="jira issue list -q '$1' --plain --columns key,summary,status,assignee | tail -n +2"
+  local _jira_cmd="jira issue list -q \"$(echo $1 | xargs)\" --plain --columns key,summary,status,assignee | tail -n +2"
   (eval $_jira_cmd) > $LIST_FILE
 }
 
@@ -56,8 +58,17 @@ function _printStatus() {
   echo "${BIGreen}\n\nJiREPL Key Bindings"
   echo "${Green}\n$JIRPL_USAGE"
   echo "\n${Color_Off}"
-  echo "${BICyan}Recent History..."
-  tail -n 10 $LIST_FILE.log | sort -r
+  # this looks bad. Maybe only do it on search change or refresh
+  _listSummary
+}
+
+function _resetSearch() {
+  LIST_FILE=$LIST_FILE_BASE.$1
+  LOG_FILE=$LOG_FILE_BASE.$1
+  _printStatus
+  tmux send -t right "q" Enter "clear" Enter \
+    "jirepl $LIST_FILE $LOG_FILE" Enter
+  tmux select-pane -t right
 }
 
 function _jiraSearchLoopCache() {
@@ -65,28 +76,42 @@ function _jiraSearchLoopCache() {
   _loadList $1
   _printStatus
   tmux send -t right "q" Enter "clear" Enter \
-    "jirepl $LIST_FILE" Enter
+    "jirepl $LIST_FILE $LOG_FILE" Enter
   tmux select-pane -t right
   while read -sk && [[ $REPLY != q ]]; do
     case $REPLY in
       s) _printStatus ;;
       h) _searchHistory ;;
+      [0-9]) _resetSearch $REPLY ;;
       *) echo "Try again..." ;;
     esac
   done
 }
 
-function jiraIssueBacklogTriage() {
-	_jiraSearchLoopCache "type in standardIssueTypes() AND type != Epic AND statusCategory != Done AND (component not in (open-source,billing-provisioning, runtime-manager, admin-cx-tool, service-hub, konnect-backend, konnect-ui, users-teams, kongponents, kong-auth-elements) OR component is EMPTY) AND project = KHCP"
+function _listSummary() {
+  for file in "$JIMUX_DIR/"*list*;do
+    _searchNumber="${file##*.}"
+    _search=$(sed -n "${_searchNumber}p" $JIMUX_CONFIG_FILE | cut -f1 -d '|')
+    _listFile="${LIST_FILE_BASE}.${_searchNumber}"
+    _timeStamp=$(date -r ${_listFile} +'%m/%d @ %H:%M')
+    _listSize=$(wc -l < $_listFile | xargs)
+    echo "${BIPurple}(press ${_searchNumber}) ${Green}[${_listSize}]\t${Yellow}${_timeStamp}\t${BICyan}${_search}${Color_Off}"
+  done
 }
 
 function jimux() {
-  # Reset the window
-  clear
+  mkdir -p $JIMUX_DIR
   tmux kill-pane -a
+  clear
+  selection=$(cat $JIMUX_CONFIG_FILE | cut -f1 -d '|' | fzf)
   tmux split-window -h -l 55%
   tmux select-pane -t left
-  jiraIssueBacklogTriage
+  clear
+  query=$(grep $selection $JIMUX_CONFIG_FILE | cut -f2 -d '|')
+  lineNum=$(grep -n $selection $JIMUX_CONFIG_FILE | cut -f1 -d ':')
+  LIST_FILE="${LIST_FILE_BASE}.$lineNum"
+  LOG_FILE="${LOG_FILE_BASE}.$lineNum"
+	_jiraSearchLoopCache $query
 }
 
 #######

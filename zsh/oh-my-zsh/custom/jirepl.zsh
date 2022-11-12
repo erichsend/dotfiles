@@ -11,12 +11,13 @@ function _printCurrentTicket () {
 }
 
 function _logChange () {
-  echo "$(date +'%m/%d@%H:%M') -- $1" | tee -a ${LIST_FILE}.log
+  echo "$(date +'%m/%d @ %H:%M') -- $1" | tee -a ${LOG_FILE}
 }
 
 function jirepl() {
   clear
   LIST_FILE=$1
+  LOG_FILE=$2
   line=$(_popList)
   key=$(cut -f 1 <<< $line)
   _printCurrentTicket
@@ -50,9 +51,10 @@ function jirepl() {
       _printCurrentTicket
       remoteKey "s"
       ;;
-    ?) 
+    \?) 
       echo "Displaying History...\n\n\n"
       remoteKey "h" ;;
+    [1-9]) remoteKey "${REPLY}" ;;
     *) echo "Try again..." ;;
     esac
   done
