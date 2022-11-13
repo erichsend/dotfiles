@@ -34,18 +34,6 @@ function _searchHistory() {
   tmux display-popup "tail -r $LOG_FILE | fzf"
 } 
 
-function _loadList() {
-  # determine list names
-  lineNum=$(grep -n $1 $JIMUX_CONFIG_FILE | cut -f1 -d ':')
-  LIST_FILE="${LIST_FILE_BASE}.$lineNum"
-  LOG_FILE="${LOG_FILE_BASE}.$lineNum"
-
-  # populate with results from jira
-  query=$(grep $1 $JIMUX_CONFIG_FILE | cut -f2 -d '|')
-  local _jira_cmd="jira issue list -q \"$(echo $query | xargs)\" --plain --columns key,summary,status,assignee | tail -n +2"
-  (eval $_jira_cmd) > $LIST_FILE
-}
-
 function _printStatus() {
   clear
   echo "${BIPurple}"
@@ -59,16 +47,6 @@ function _printStatus() {
   tail -n 10 $LOG_FILE | nl | sort -nr | cut -f 2-
 }
 
-# used by refereshAll, otherwise only used from jirepl on current list
-function _refreshList() {
-  # use $LIST_FILE file extension to refresh the list
-  # Use this to get search from conf using number
-}
-
-# callable from 'dashboard'
-function _refreshAllLists() {
- # for i in config lines, create lists
-}
 
 function _startJirepl() {
   tmux send -t right "q" Enter "clear" Enter \
@@ -117,11 +95,41 @@ function _setSearchLoop() {
     case $REPLY in
       [1-9]) _selection=$(sed -n "${REPLY}p" $JIMUX_CONFIG_FILE | cut -f1 -d '|') && break ;;
       q) tmux kill-window ;;
+      R) _refreshLists && _listSummary ;;
       *) echo "Try again..." ;;
     esac
   done
   echo "${Cyan}Loading Jimux for >>> ${BIYellow}$_selection${Color_Off}"
   _loadList $_selection
+}
+
+function _loadList() {
+  # determine list names
+  lineNum=$(grep -n $1 $JIMUX_CONFIG_FILE | cut -f1 -d ':')
+  LIST_FILE="${LIST_FILE_BASE}.$lineNum"
+  LOG_FILE="${LOG_FILE_BASE}.$lineNum"
+
+  # populate with results from jira
+  query=$(grep $1 $JIMUX_CONFIG_FILE | cut -f2 -d '|')
+  local _jira_cmd="jira issue list -q \"$(echo $query | xargs)\" --plain --columns key,summary,status,assignee | tail -n +2"
+  (eval $_jira_cmd) > $LIST_FILE
+}
+
+# used by refereshAll, otherwise only used from jirepl on current list
+function _refreshLists() {
+  clear
+  while read -s line
+  do
+    echo "${BIYellow}Updating List: $(echo $line | cut -f1 -d '|' )... ${Color_Off}"
+    lineNum=$(grep -n $line $JIMUX_CONFIG_FILE | cut -f1 -d ':')
+    touch "${LIST_FILE_BASE}.$lineNum"
+    query=$(echo $line | cut -f2 -d '|')
+    local _jira_cmd="jira issue list -q \"$(echo $query | xargs)\" --plain --columns key,summary,status,assignee | tail -n +2"
+    (eval $_jira_cmd) > "${LIST_FILE_BASE}.$lineNum"
+    echo "${Green}\t\t\tUpdated! Issues Found:$(cat ${LIST_FILE_BASE}.$lineNum | wc -l)\n\n"
+  done < $JIMUX_CONFIG_FILE
+  sleep 2
+  clear
 }
 
 #######
