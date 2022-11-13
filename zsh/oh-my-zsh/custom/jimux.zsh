@@ -84,7 +84,8 @@ function _jiraSearchLoopCache() {
     case $REPLY in
       s) _printStatus ;;
       h) _searchHistory ;;
-      z) clear &&  tmux select-pane -t left && _setSearchLoop && clear && _printStatus && _startJirepl;;
+      y) clear &&  tmux select-pane -t left && _setSearchLoop && clear && _printStatus && _startJirepl;;
+      z) clear && tmux kill-pane -t right && _setSearchLoop && clear && _printStatus && tmux split-window -h -l 55% && _startJirepl;;
       *) echo "Try again..." ;;
     esac
   done
