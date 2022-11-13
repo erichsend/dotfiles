@@ -21,7 +21,7 @@ function jirepl() {
   line=$(_popList)
   key=$(cut -f 1 <<< $line)
   _printCurrentTicket
-  while echo "${BWhite}Choose an action\n${Color_Off}" && read -sk && [[ $REPLY != q ]]; do case $REPLY in
+  while echo "${BWhite}Choose an action\n${Color_Off}" && read -sk; do case $REPLY in
     # Change current issue
     a) _logChange "$key | Assigned" && jira issue assign $key;;
     e) _logChange "$key | Edited" && jira issue edit $key;;
@@ -55,6 +55,7 @@ function jirepl() {
       echo "Displaying History...\n\n\n"
       remoteKey "h" ;;
     z) remoteKey "z" ;;
+    q) remoteKey "q" ;;
     *) echo "Try again..." ;;
     esac
   done

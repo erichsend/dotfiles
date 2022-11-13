@@ -76,16 +76,21 @@ function _startJirepl() {
   tmux select-pane -t right
 }
 
-function _jiraSearchLoopCache() {
+function jimux() {
+  mkdir -p $JIMUX_DIR
+  clear
+  _setSearchLoop
    clear
   _printStatus
+  tmux split-window -h -l 55%
   _startJirepl
-  while read -sk && [[ $REPLY != q ]]; do
+  while read -sk; do
     case $REPLY in
       s) _printStatus ;;
       h) _searchHistory ;;
       y) clear &&  tmux select-pane -t left && _setSearchLoop && clear && _printStatus && _startJirepl;;
       z) clear && tmux kill-pane -t right && _setSearchLoop && clear && _printStatus && tmux split-window -h -l 55% && _startJirepl;;
+      q) tmux kill-window ;;
       *) echo "Try again..." ;;
     esac
   done
@@ -108,26 +113,15 @@ function _setSearchLoop() {
   _listSummary
   _selection=""
   # selection=$(cat $JIMUX_CONFIG_FILE | cut -f1 -d '|' | fzf --height 40% --reverse)
-  while read -sk && [[ $REPLY != q ]]; do
+  while read -sk ; do
     case $REPLY in
       [1-9]) _selection=$(sed -n "${REPLY}p" $JIMUX_CONFIG_FILE | cut -f1 -d '|') && break ;;
+      q) tmux kill-window ;;
       *) echo "Try again..." ;;
     esac
   done
   echo "${Cyan}Loading Jimux for >>> ${BIYellow}$_selection${Color_Off}"
   _loadList $_selection
-}
-
-function jimux() {
-  mkdir -p $JIMUX_DIR
-  tmux kill-pane -a
-  clear
-  tmux split-window -h -l 55%
-  tmux select-pane -t left
-  clear
-  _setSearchLoop
-  clear
-	_jiraSearchLoopCache
 }
 
 #######
