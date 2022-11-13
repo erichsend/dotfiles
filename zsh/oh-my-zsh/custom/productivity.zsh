@@ -5,7 +5,6 @@ alias cc='$EDITOR ~/.cheatsheet'
 # Config
 alias dot="$EDITOR ~/repo/dotfiles --cmd 'cd ~/repo/dotfiles'"
 
-
 # Navigation
 alias vd='cd ~/.vim'
 alias zd='cd ~/.oh-my-zsh/custom'
