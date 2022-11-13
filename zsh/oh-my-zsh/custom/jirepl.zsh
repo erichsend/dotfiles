@@ -54,7 +54,7 @@ function jirepl() {
     \?) 
       echo "Displaying History...\n\n\n"
       remoteKey "h" ;;
-    [1-9]) remoteKey "${REPLY}" ;;
+    z) remoteKey "z" ;;
     *) echo "Try again..." ;;
     esac
   done

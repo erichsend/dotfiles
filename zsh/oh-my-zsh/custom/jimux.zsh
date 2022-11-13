@@ -30,22 +30,19 @@ JIRPL_USAGE=$(cat <<-END
 END
 )
 
-# Helper function since jira-cli has no way to get an issue parent
-# Note: ${JIRA_BASIC} must be set on the environment
-# JIRA_BASIC=$(echo -n david.erichsen@konghq.com:${JIRA_API_TOKEN} | base64)
-function _getParent() {
-  curl --request GET \
-    --url "https://konghq.atlassian.net/rest/api/3/issue/${1}" \
-    --header "Authorization: Basic ${JIRA_BASIC}" \
-    --header 'Accept: application/json' --silent | jq -r '.fields.parent.key'
-}
-
 function _searchHistory() {
   tmux display-popup "tail -r $LOG_FILE | fzf"
 } 
 
 function _loadList() {
-  local _jira_cmd="jira issue list -q \"$(echo $1 | xargs)\" --plain --columns key,summary,status,assignee | tail -n +2"
+  # determine list names
+  lineNum=$(grep -n $1 $JIMUX_CONFIG_FILE | cut -f1 -d ':')
+  LIST_FILE="${LIST_FILE_BASE}.$lineNum"
+  LOG_FILE="${LOG_FILE_BASE}.$lineNum"
+
+  # populate with results from jira
+  query=$(grep $1 $JIMUX_CONFIG_FILE | cut -f2 -d '|')
+  local _jira_cmd="jira issue list -q \"$(echo $query | xargs)\" --plain --columns key,summary,status,assignee | tail -n +2"
   (eval $_jira_cmd) > $LIST_FILE
 }
 
@@ -58,14 +55,22 @@ function _printStatus() {
   echo "${BIGreen}\n\nJiREPL Key Bindings"
   echo "${Green}\n$JIRPL_USAGE"
   echo "\n${Color_Off}"
-  # this looks bad. Maybe only do it on search change or refresh
-  _listSummary
+  echo "${BICyan}Recent History..."
+  tail -n 10 $LOG_FILE | nl | sort -nr | cut -f 2-
 }
 
-function _resetSearch() {
-  LIST_FILE=$LIST_FILE_BASE.$1
-  LOG_FILE=$LOG_FILE_BASE.$1
-  _printStatus
+# used by refereshAll, otherwise only used from jirepl on current list
+function _refreshList() {
+  # use $LIST_FILE file extension to refresh the list
+  # Use this to get search from conf using number
+}
+
+# callable from 'dashboard'
+function _refreshAllLists() {
+ # for i in config lines, create lists
+}
+
+function _startJirepl() {
   tmux send -t right "q" Enter "clear" Enter \
     "jirepl $LIST_FILE $LOG_FILE" Enter
   tmux select-pane -t right
@@ -73,45 +78,55 @@ function _resetSearch() {
 
 function _jiraSearchLoopCache() {
    clear
-  _loadList $1
   _printStatus
-  tmux send -t right "q" Enter "clear" Enter \
-    "jirepl $LIST_FILE $LOG_FILE" Enter
-  tmux select-pane -t right
+  _startJirepl
   while read -sk && [[ $REPLY != q ]]; do
     case $REPLY in
       s) _printStatus ;;
       h) _searchHistory ;;
-      [0-9]) _resetSearch $REPLY ;;
+      z) clear &&  tmux select-pane -t left && _setSearchLoop && clear && _printStatus && _startJirepl;;
       *) echo "Try again..." ;;
     esac
   done
 }
 
 function _listSummary() {
+  echo "${BIPurple}Select a Search: ${Color_Off}\n"
   for file in "$JIMUX_DIR/"*list*;do
     _searchNumber="${file##*.}"
     _search=$(sed -n "${_searchNumber}p" $JIMUX_CONFIG_FILE | cut -f1 -d '|')
     _listFile="${LIST_FILE_BASE}.${_searchNumber}"
     _timeStamp=$(date -r ${_listFile} +'%m/%d @ %H:%M')
     _listSize=$(wc -l < $_listFile | xargs)
-    echo "${BIPurple}(press ${_searchNumber}) ${Green}[${_listSize}]\t${Yellow}${_timeStamp}\t${BICyan}${_search}${Color_Off}"
+    echo "${BIPurple}${_searchNumber}: ${BICyan}${_search} ${Green}[Total Issues: ${_listSize}] ${Blue}[Last Updated: ${_timeStamp}]\n"
   done
+  echo "${BIPurple}Or press R to Refresh All${Color_Off}\n"
+}
+
+function _setSearchLoop() {
+  _listSummary
+  _selection=""
+  # selection=$(cat $JIMUX_CONFIG_FILE | cut -f1 -d '|' | fzf --height 40% --reverse)
+  while read -sk && [[ $REPLY != q ]]; do
+    case $REPLY in
+      [1-9]) _selection=$(sed -n "${REPLY}p" $JIMUX_CONFIG_FILE | cut -f1 -d '|') && break ;;
+      *) echo "Try again..." ;;
+    esac
+  done
+  echo "${Cyan}Loading Jimux for >>> ${BIYellow}$_selection${Color_Off}"
+  _loadList $_selection
 }
 
 function jimux() {
   mkdir -p $JIMUX_DIR
   tmux kill-pane -a
   clear
-  selection=$(cat $JIMUX_CONFIG_FILE | cut -f1 -d '|' | fzf)
   tmux split-window -h -l 55%
   tmux select-pane -t left
   clear
-  query=$(grep $selection $JIMUX_CONFIG_FILE | cut -f2 -d '|')
-  lineNum=$(grep -n $selection $JIMUX_CONFIG_FILE | cut -f1 -d ':')
-  LIST_FILE="${LIST_FILE_BASE}.$lineNum"
-  LOG_FILE="${LOG_FILE_BASE}.$lineNum"
-	_jiraSearchLoopCache $query
+  _setSearchLoop
+  clear
+	_jiraSearchLoopCache
 }
 
 #######
