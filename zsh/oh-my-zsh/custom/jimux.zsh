@@ -6,11 +6,6 @@ JIMUX_CONFIG_FILE="$JIMUX_DIR/jimux.conf"
 JIMUX_SPRINT_FILE="$JIMUX_DIR/sprints.out"
 
 JIRPL_USAGE=$(cat <<-END
-# Interactive Commands
-(a)ssign    (e)dit    (o)pen
-(m)ove      (s)print
-(v)iew      (p)arent
-
 # Quick-Change Components (Add)
 (A)dmin-cx-tool    (B)illing-provisioning
 (R)untime-manager  (S)ervice-hub
@@ -25,10 +20,14 @@ JIRPL_USAGE=$(cat <<-END
 # Quick Transition
 (C)lose
 
+# Interactive Commands
+(a)ssign    (e)dit    (o)pen
+(m)ove      (s)print
+(v)iew      (p)arent
+
 (x) Next Issue
 (?) Search History
-(!) Refresh List (not implemented)
-
+(q) Quit
 END
 )
 
@@ -42,12 +41,23 @@ function _loadActiveSprints() {
   curl --request GET \
     --url 'https://konghq.atlassian.net/rest/agile/1.0/board/182/sprint?state=active' \
     --header "Authorization: Basic ${JIRA_BASIC}" \
-    --header 'Accept: application/json' --silent | jq -c '.values[] | {id: .id, name: .name  }' | tee $JIMUX_SPRINT_FILE
+    --header 'Accept: application/json' --silent | jq -c '.values[] | {id: .id, name: .name  }' > $JIMUX_SPRINT_FILE
 
   curl --request GET \
     --url 'https://konghq.atlassian.net/rest/agile/1.0/board/183/sprint?state=active' \
     --header "Authorization: Basic ${JIRA_BASIC}" \
-    --header 'Accept: application/json' --silent | jq -c '.values[] | {id: .id, name: .name  }' | tee -a $JIMUX_SPRINT_FILE
+    --header 'Accept: application/json' --silent | jq -c '.values[] | {id: .id, name: .name  }' >> $JIMUX_SPRINT_FILE
+  cat $JIMUX_SPRINT_FILE | sort | uniq > $JIMUX_SPRINT_FILE
+}
+
+function _printActiveSprints() {
+  echo "# Quick Add to Active Sprint"
+  _optNum=1
+  while read -s line
+  do
+    echo "(${_optNum}) $(echo $line | jq .name)"
+    (( _optNum++ ))
+  done < $JIMUX_SPRINT_FILE
 }
 
 function _printStatus() {
@@ -56,7 +66,8 @@ function _printStatus() {
   echo "Tickets Remaining: $(cat $LIST_FILE | wc -l)\n\n"
   echo "${BIBlue}Coming Up...${Blue}"
   sed -n '1,10p' $LIST_FILE | cut -f 1-2 | cut -c -100
-  echo "${BIGreen}\n\nJiREPL Key Bindings"
+  echo "${BIGreen}\nJiREPL Key Bindings"
+  echo "${Green}" && _printActiveSprints
   echo "${Green}\n$JIRPL_USAGE"
   echo "\n${Color_Off}"
   echo "${BICyan}Recent History..."
@@ -125,10 +136,11 @@ function _loadList() {
   LIST_FILE="${LIST_FILE_BASE}.$lineNum"
   LOG_FILE="${LOG_FILE_BASE}.$lineNum"
 
+  # Trying out only refreshing using refresh all
   # populate with results from jira
-  query=$(grep $1 $JIMUX_CONFIG_FILE | cut -f2 -d '|')
-  local _jira_cmd="jira issue list -q \"$(echo $query | xargs)\" --plain --columns key,summary,status,assignee | tail -n +2"
-  (eval $_jira_cmd) > $LIST_FILE
+  # query=$(grep $1 $JIMUX_CONFIG_FILE | cut -f2 -d '|')
+  # local _jira_cmd="jira issue list -q \"$(echo $query | xargs)\" --plain --columns key,summary,status,assignee | tail -n +2"
+  # (eval $_jira_cmd) > $LIST_FILE
 }
 
 # used by refereshAll, otherwise only used from jirepl on current list

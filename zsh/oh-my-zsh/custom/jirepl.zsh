@@ -7,23 +7,9 @@ function _popList() {
 }
 
 function _addToSprint() {
-  echo "Select a Sprint..."
-  _optNum=1
-  while read -s line
-  do
-    echo "(${_optNum}) $(echo $line | jq .name)"
-    (( _optNum++ ))
-  done < $JIMUX_SPRINT_FILE
-  while read -sk; do
-    case $REPLY in
-      [1-9])
-        _selectedLine=$(sed -n "${REPLY}p" $JIMUX_SPRINT_FILE)
-        echo "Adding to Sprint $(echo $_selectedLine | jq .name)"
-        jira sprint add $(echo $_selectedLine | jq .id) $1
-        break ;;
-      *) echo "Try again..." ;;
-    esac
-  done
+  _selectedLine=$(sed -n "${1}p" $JIMUX_SPRINT_FILE)
+  echo "Adding to Sprint $(echo $_selectedLine | jq .name)"
+  jira sprint add $(echo $_selectedLine | jq .id) $2
 }
 
 function _printCurrentTicket () {
@@ -57,7 +43,6 @@ function jirepl() {
     m) _logChange "$key | Moved" && jira issue move $key ;;
     o) echo "Opening Issue...\n\n\n" && jira open $key ;;
     p) echo "Fetching Parent...\n\n\n" && _viewParent $key ;;
-    s) _addToSprint $key ;;
     v) echo "Fetching Issue...\n\n\n" && jira issue view $key --plain ;;
 
     # Quick-Change Commands
@@ -73,6 +58,7 @@ function jirepl() {
     R) _logChange "$key | Adding Component: runtime-manager" && jira issue edit $key -Cruntime-manager --no-input ;;
     S) _logChange "$key | Adding Component: service-hub" && jira issue edit $key -Cservice-hub --no-input ;;
     U) _logChange "$key | Adding Component: konnect-ui" && jira issue edit $key -Ckonnect-ui --no-input ;;
+    [0-9]) _addToSprint $REPLY $key ;;
 
     # TMUX Commands 
     x) 
