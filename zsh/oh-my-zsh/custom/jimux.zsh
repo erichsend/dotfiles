@@ -3,11 +3,13 @@ JIMUX_DIR="$XDG_CONFIG_HOME/jimux"
 LIST_FILE_BASE="$JIMUX_DIR/jimux-list"
 LOG_FILE_BASE="$JIMUX_DIR/jimux-log"
 JIMUX_CONFIG_FILE="$JIMUX_DIR/jimux.conf" 
+JIMUX_SPRINT_FILE="$JIMUX_DIR/sprints.out"
 
 JIRPL_USAGE=$(cat <<-END
 # Interactive Commands
-(a)ssign    (e)dit    (m)ove
-(v)iew      (o)pen in Browser     
+(a)ssign    (e)dit    (o)pen
+(m)ove      (s)print
+(v)iew      (p)arent
 
 # Quick-Change Components (Add)
 (A)dmin-cx-tool    (B)illing-provisioning
@@ -34,19 +36,32 @@ function _searchHistory() {
   tmux display-popup "tail -r $LOG_FILE | fzf"
 } 
 
+# Add 'S' to add to sprint. Starts new display/loop based on sprints.out
+# Then set their selection and use grep -F "$f" sprints.out | jq .id
+function _loadActiveSprints() {
+  curl --request GET \
+    --url 'https://konghq.atlassian.net/rest/agile/1.0/board/182/sprint?state=active' \
+    --header "Authorization: Basic ${JIRA_BASIC}" \
+    --header 'Accept: application/json' --silent | jq -c '.values[] | {id: .id, name: .name  }' | tee $JIMUX_SPRINT_FILE
+
+  curl --request GET \
+    --url 'https://konghq.atlassian.net/rest/agile/1.0/board/183/sprint?state=active' \
+    --header "Authorization: Basic ${JIRA_BASIC}" \
+    --header 'Accept: application/json' --silent | jq -c '.values[] | {id: .id, name: .name  }' | tee -a $JIMUX_SPRINT_FILE
+}
+
 function _printStatus() {
   clear
   echo "${BIPurple}"
   echo "Tickets Remaining: $(cat $LIST_FILE | wc -l)\n\n"
   echo "${BIBlue}Coming Up...${Blue}"
-  sed -n '2,10p' $LIST_FILE | cut -f 1-2 | cut -c -100
+  sed -n '1,10p' $LIST_FILE | cut -f 1-2 | cut -c -100
   echo "${BIGreen}\n\nJiREPL Key Bindings"
   echo "${Green}\n$JIRPL_USAGE"
   echo "\n${Color_Off}"
   echo "${BICyan}Recent History..."
   tail -n 10 $LOG_FILE | nl | sort -nr | cut -f 2-
 }
-
 
 function _startJirepl() {
   tmux send -t right "q" Enter "clear" Enter \
@@ -57,6 +72,7 @@ function _startJirepl() {
 function jimux() {
   mkdir -p $JIMUX_DIR
   clear
+  _loadActiveSprints
   _setSearchLoop
    clear
   _printStatus

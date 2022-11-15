@@ -6,28 +6,59 @@ function _popList() {
   echo $_result
 }
 
+function _addToSprint() {
+  echo "Select a Sprint..."
+  _optNum=1
+  while read -s line
+  do
+    echo "(${_optNum}) $(echo $line | jq .name)"
+    (( _optNum++ ))
+  done < $JIMUX_SPRINT_FILE
+  while read -sk; do
+    case $REPLY in
+      [1-9])
+        _selectedLine=$(sed -n "${REPLY}p" $JIMUX_SPRINT_FILE)
+        echo "Adding to Sprint $(echo $_selectedLine | jq .name)"
+        jira sprint add $(echo $_selectedLine | jq .id) $1
+        break ;;
+      *) echo "Try again..." ;;
+    esac
+  done
+}
+
 function _printCurrentTicket () {
-  echo "\n\n${Blue}Current Ticket:\n${BIBlue}$(echo $line | sed -E 's/\t+/  ||  /g')\n\n${Color_Off}"
+  echo "\n\n${Blue}Current Ticket:\n${BIBlue}$(echo $1 | sed -E 's/\t+/  ||  /g')\n\n${Color_Off}"
 }
 
 function _logChange () {
   echo "$(date +'%m/%d @ %H:%M') -- $1" | tee -a ${LOG_FILE}
 }
 
+# Helper function since jira-cli has no way to get an issue parent
+# Note: ${JIRA_BASIC} must be set on the environment
+# JIRA_BASIC=$(echo -n david.erichsen@konghq.com:${JIRA_API_TOKEN} | base64)
+function _viewParent() {
+  jira issue view --plain $(curl --request GET \
+    --url "https://konghq.atlassian.net/rest/api/3/issue/${1}" \
+    --header "Authorization: Basic ${JIRA_BASIC}" \
+    --header 'Accept: application/json' --silent | jq -r '.fields.parent.key')
+}
 function jirepl() {
   clear
   LIST_FILE=$1
   LOG_FILE=$2
-  line=$(_popList)
-  key=$(cut -f 1 <<< $line)
-  _printCurrentTicket
+  _line=$(_popList)
+  key=$(cut -f 1 <<< $_line)
+  _printCurrentTicket $_line
   while echo "${BWhite}Choose an action\n${Color_Off}" && read -sk; do case $REPLY in
-    # Change current issue
-    a) _logChange "$key | Assigned" && jira issue assign $key;;
-    e) _logChange "$key | Edited" && jira issue edit $key;;
-    m) _logChange "$key | Moved" && jira issue move $key;;
-    o) jira open $key;;
-    v) jira issue view $key --plain;;
+    # Jira Commands
+    a) _logChange "$key | Assigned" && jira issue assign $key ;;
+    e) _logChange "$key | Edited" && jira issue edit $key ;;
+    m) _logChange "$key | Moved" && jira issue move $key ;;
+    o) echo "Opening Issue...\n\n\n" && jira open $key ;;
+    p) echo "Fetching Parent...\n\n\n" && _viewParent $key ;;
+    s) _addToSprint $key ;;
+    v) echo "Fetching Issue...\n\n\n" && jira issue view $key --plain ;;
 
     # Quick-Change Commands
     # Consider making the component add be a function, and having it remove other components.
@@ -45,8 +76,8 @@ function jirepl() {
 
     # TMUX Commands 
     x) 
-      line=$(_popList)
-      key=$(cut -f 1 <<< $line)
+      _line=$(_popList)
+      key=$(cut -f 1 <<< $_line)
       clear
       _printCurrentTicket
       remoteKey "s"
