@@ -65,7 +65,7 @@ function jirepl() {
       _line=$(_popList)
       key=$(cut -f 1 <<< $_line)
       clear
-      _printCurrentTicket
+      _printCurrentTicket $key
       remoteKey "s"
       ;;
     \?) 
