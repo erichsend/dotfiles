@@ -9,7 +9,7 @@ JIRPL_USAGE=$(cat <<-END
 # Quick-Change Components (Add)
 (A)dmin-cx-tool    (B)illing-provisioning
 (R)untime-manager  (S)ervice-hub
-(U)onnect-ui
+(U)onnect-ui       (Q)sdet
 
 # Quick-Change Labels (Add)
 (K)onnect-backend
@@ -47,7 +47,7 @@ function _loadActiveSprints() {
     --url 'https://konghq.atlassian.net/rest/agile/1.0/board/183/sprint?state=active' \
     --header "Authorization: Basic ${JIRA_BASIC}" \
     --header 'Accept: application/json' --silent | jq -c '.values[] | {id: .id, name: .name  }' >> $JIMUX_SPRINT_FILE
-  cat $JIMUX_SPRINT_FILE | sort | uniq > $JIMUX_SPRINT_FILE
+  # cat $JIMUX_SPRINT_FILE | sort | uniq > $JIMUX_SPRINT_FILE
 }
 
 function _printActiveSprints() {
@@ -109,7 +109,7 @@ function _listSummary() {
     _listFile="${LIST_FILE_BASE}.${_searchNumber}"
     _timeStamp=$(date -r ${_listFile} +'%m/%d @ %H:%M')
     _listSize=$(wc -l < $_listFile | xargs)
-    echo "${BIPurple}${_searchNumber}: ${BICyan}${_search} ${Green}[Total Issues: ${_listSize}] ${Blue}[Last Updated: ${_timeStamp}]\n"
+    echo "${BIPurple}$(([##16]_searchNumber)): ${BICyan}${_search} ${Green}[Total Issues: ${_listSize}] ${Blue}[Last Updated: ${_timeStamp}]\n"
   done
   echo "${BIPurple}Or press R to Refresh All${Color_Off}\n"
 }
@@ -120,7 +120,7 @@ function _setSearchLoop() {
   # selection=$(cat $JIMUX_CONFIG_FILE | cut -f1 -d '|' | fzf --height 40% --reverse)
   while read -sk ; do
     case $REPLY in
-      [1-9]) _selection=$(sed -n "${REPLY}p" $JIMUX_CONFIG_FILE | cut -f1 -d '|') && break ;;
+      [1-9A-F]) _selection=$(sed -n "$((16#${REPLY}))p" $JIMUX_CONFIG_FILE | cut -f1 -d '|') && break ;;
       q) tmux kill-window ;;
       R) _refreshLists && _listSummary ;;
       *) echo "Try again..." ;;

@@ -55,6 +55,7 @@ function jirepl() {
     K) _logChange "$key | Adding Component: konnect-backend" && jira issue edit $key -Ckonnect-backend --no-input ;;
     N) _logChange "$key | Adding Label: needs-refinement" && jira issue edit $key -lneeds-refinement --no-input ;;
     P) _logChange "$key | Adding Label: prioritized" && jira issue edit $key -lprioritize --no-input ;;
+    Q) _logChange "$key | Adding Component: sdet" && jira issue edit $key -Csdet --no-input ;;
     R) _logChange "$key | Adding Component: runtime-manager" && jira issue edit $key -Cruntime-manager --no-input ;;
     S) _logChange "$key | Adding Component: service-hub" && jira issue edit $key -Cservice-hub --no-input ;;
     U) _logChange "$key | Adding Component: konnect-ui" && jira issue edit $key -Ckonnect-ui --no-input ;;
@@ -65,7 +66,7 @@ function jirepl() {
       _line=$(_popList)
       key=$(cut -f 1 <<< $_line)
       clear
-      _printCurrentTicket $key
+      _printCurrentTicket $_line
       remoteKey "s"
       ;;
     \?) 
