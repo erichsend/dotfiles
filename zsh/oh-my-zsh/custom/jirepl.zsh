@@ -13,7 +13,11 @@ function _addToSprint() {
 }
 
 function _printCurrentTicket () {
-  echo "\n\n${Blue}Current Ticket:\n${BIBlue}$(echo $1 | sed -E 's/\t+/  ||  /g')\n\n${Color_Off}"
+  _delimitedLine=$(sed -E 's/\t+/|/g' <<< $1)
+  echo "\n\n${BIYellow}Current Ticket:\t$(cut -f2 -d'|' <<< $_delimitedLine)"
+  echo "${Blue}Key:\t\t$(cut -f1 -d'|' <<< $_delimitedLine)${Color_Off}"
+  echo "${Blue}Status:\t\t$(cut -f3 -d'|' <<< $_delimitedLine)${Color_Off}"
+  echo "${Blue}Assignee:\t\t$(cut -f4 -d'|' <<< $_delimitedLine)\n${Color_Off}"
 }
 
 function _logChange () {
