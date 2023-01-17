@@ -168,6 +168,7 @@ lvim.builtin.treesitter.highlight.enable = true
 
 -- Additional Plugins
 lvim.plugins = {
+  { "mxsdev/nvim-dap-vscode-js", requires = { "mfussenegger/nvim-dap" } },
   { "ishan9299/nvim-solarized-lua" },
   {
     "navarasu/onedark.nvim",
@@ -176,10 +177,116 @@ lvim.plugins = {
         style = 'darker',
       })
       -- reload the color scheme because config runs after plugin load
-      vim.cmd[[colorscheme onedark]]
+      vim.cmd [[colorscheme onedark]]
     end,
   },
+  {
+    "klen/nvim-test",
+    config = function()
+      require('nvim-test').setup({})
+    end
+  },
 }
+
+require('nvim-test').setup {
+  run = true, -- run tests (using for debug)
+  commands_create = true, -- create commands (TestFile, TestLast, ...)
+  filename_modifier = ":.", -- modify filenames before tests run(:h filename-modifiers)
+  silent = false, -- less notifications
+  term = "terminal", -- a terminal to run ("terminal"|"toggleterm")
+  termOpts = {
+    direction = "vertical", -- terminal's direction ("horizontal"|"vertical"|"float")
+    width = 96, -- terminal's width (for vertical|float)
+    height = 24, -- terminal's height (for horizontal|float)
+    go_back = false, -- return focus to original window after executing
+    stopinsert = "auto", -- exit from insert mode (true|false|"auto")
+    keep_one = true, -- keep only one terminal for testing
+  },
+  runners = { -- setup tests runners
+    cs = "nvim-test.runners.dotnet",
+    go = "nvim-test.runners.go-test",
+    haskell = "nvim-test.runners.hspec",
+    javacriptreact = "nvim-test.runners.jest",
+    javascript = "nvim-test.runners.jest",
+    lua = "nvim-test.runners.busted",
+    python = "nvim-test.runners.pytest",
+    ruby = "nvim-test.runners.rspec",
+    rust = "nvim-test.runners.cargo-test",
+    typescript = "nvim-test.runners.jest",
+    typescriptreact = "nvim-test.runners.jest",
+  }
+}
+
+-- setup adapters
+require('dap-vscode-js').setup({
+  debugger_path = vim.fn.stdpath('data') .. '/mason/packages/js-debug-adapter',
+  debugger_cmd = { 'js-debug-adapter' },
+  adapters = { 'pwa-node', 'pwa-chrome', 'pwa-msedge', 'node-terminal', 'pwa-extensionHost' },
+})
+
+local dap = require('dap')
+
+-- custom adapter for running tasks before starting debug
+local custom_adapter = 'pwa-node-custom'
+dap.adapters[custom_adapter] = function(config)
+  if config.preLaunchTask then
+    local async = require('plenary.async')
+    local notify = require('notify').async
+
+    async.run(function()
+      ---@diagnostic disable-next-line: missing-parameter
+      notify('Running [' .. config.preLaunchTask .. ']').events.close()
+    end, function()
+      vim.fn.system(config.preLaunchTask)
+      config.type = 'pwa-node'
+      dap.run(config)
+    end)
+  end
+end
+
+-- language config
+for _, language in ipairs({ 'typescript', 'javascript' }) do
+  dap.configurations[language] = {
+    {
+      name = 'Launch',
+      type = 'pwa-node',
+      request = 'launch',
+      program = '${file}',
+      rootPath = '${workspaceFolder}',
+      cwd = '${workspaceFolder}',
+      sourceMaps = true,
+      skipFiles = { '<node_internals>/**' },
+      protocol = 'inspector',
+      console = 'integratedTerminal',
+    },
+    {
+      name = 'Attach to node process',
+      type = 'pwa-node',
+      request = 'attach',
+      rootPath = '${workspaceFolder}',
+      processId = require('dap.utils').pick_process,
+    },
+    {
+      type = "pwa-node",
+      request = "launch",
+      name = "Debug Jest Tests",
+      -- trace = true, -- include debugger info
+      runtimeExecutable = "node",
+      runtimeArgs = {
+        "./node_modules/jest/bin/jest.js",
+        "--runInBand",
+      },
+      rootPath = "${workspaceFolder}",
+      cwd = "${workspaceFolder}",
+      console = "integratedTerminal",
+      sourceMaps = true,
+      skipFiles = { '<node_internals>/**' },
+      internalConsoleOptions = "neverOpen",
+      resolveSourceMapLocations = { "${workspaceFolder}/**", "!**/node_modules/**" },
+    },
+  }
+end
+
 
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
 -- vim.api.nvim_create_autocmd("BufEnter", {
