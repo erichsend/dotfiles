@@ -12,5 +12,5 @@ windows:
 - window_name: run
   layout: 64ee,343x77,0,0{241x77,0,0,10,101x77,242,0,13}
   panes:
-  - lazygit
   - focus: 'true'
+  -
