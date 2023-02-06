@@ -1,16 +1,16 @@
 # Set mode to vim prior to running fzf
 bindkey -v
 
-# Setup fzf
-# ---------
-if [[ ! "$PATH" == */opt/homebrew/opt/fzf/bin* ]]; then
+# Mac
+if [ -f /opt/homebrew/opt/fzf/shell/completion.zsh ]; then
   export PATH="${PATH:+${PATH}:}/opt/homebrew/opt/fzf/bin"
+  source "/opt/homebrew/opt/fzf/shell/completion.zsh" 2> /dev/null
+  source "/opt/homebrew/opt/fzf/shell/key-bindings.zsh" 2> /dev/null
 fi
 
-# Auto-completion
-# ---------------
-[[ $- == *i* ]] && source "/opt/homebrew/opt/fzf/shell/completion.zsh" 2> /dev/null
+# Ubuntu
+if [ -f /usr/share/doc/fzf/examples/completion.zsh ]; then
+    . /usr/share/doc/fzf/examples/completion.zsh 2> /dev/null
+    . /usr/share/doc/fzf/examples/completion.zsh 2> /dev/null
+fi
 
-# Key bindings
-# ------------
-source "/opt/homebrew/opt/fzf/shell/key-bindings.zsh"
