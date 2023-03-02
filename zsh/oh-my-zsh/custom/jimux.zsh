@@ -10,6 +10,7 @@ JIRPL_USAGE=$(cat <<-END
 (A)dmin-cx-tool    (B)illing-provisioning
 (R)untime-manager  (S)ervice-hub
 (U)onnect-ui       (Q)sdet
+(G)ng-service-hub
 
 # Quick-Change Labels (Add)
 (K)onnect-backend

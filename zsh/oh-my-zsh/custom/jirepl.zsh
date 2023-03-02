@@ -56,6 +56,7 @@ function jirepl() {
     B) _logChange "$key | Adding Component: billing-provisioning" && jira issue edit $key -Cbilling-provisioning --no-input ;;
     C) _logChange "$key | Closing Issue" && jira issue move $key "Resolved" ;;
     D) _logChange "$key | Adding Label: deprioritized" && jira issue edit $key -ldeprioritize --no-input ;;
+    G) _logChange "$key | Adding Component: ng-service-hub" && jira issue edit $key -Cng-service-hub --no-input ;;
     K) _logChange "$key | Adding Component: konnect-backend" && jira issue edit $key -Ckonnect-backend --no-input ;;
     N) _logChange "$key | Adding Label: needs-refinement" && jira issue edit $key -lneeds-refinement --no-input ;;
     P) _logChange "$key | Adding Label: prioritized" && jira issue edit $key -lprioritize --no-input ;;
