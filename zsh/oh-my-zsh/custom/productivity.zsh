@@ -10,3 +10,7 @@ alias vd='cd ~/.vim'
 alias zd='cd ~/.oh-my-zsh/custom'
 alias td='cd ~/.tmux'
 alias dd='cd ~/repo/dotfiles/'
+
+
+# alias to send output to vim
+alias v='nvim -'

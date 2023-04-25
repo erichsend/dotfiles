@@ -3,20 +3,13 @@ start_directory: '~'
 options:
   automatic-rename: 'off'
 windows:
-- layout: 55bd,245x59,0,0[245x39,0,0,0,245x19,0,40,1]
+- window_name: k9s
+  layout: 55bd,245x59,0,0[245x39,0,0,0,245x19,0,40,1]
   panes:
   - focus: 'true'
     shell_command: k9s
   - k8s
-  window_name: k9s
   focus: 'true'
-- layout: 6359,245x59,0,0{94x59,0,0[94x29,0,0,2,94x29,0,30,5],150x59,95,0,4}
-  panes:
-  - jira
-  - focus: 'true'
-    shell_command: jira issue list
-  - 
-  window_name: jira
 - window_name: note
   panes:
   - lvim
