@@ -12,7 +12,7 @@ windows:
   focus: 'true'
 - window_name: note
   panes:
-  - lvim
+  - nvim
   start_directory: '~/notes'
 - window_name: scratch
   panes:
