@@ -5,6 +5,7 @@ kong.zsh
 secrets.zsh
 volta.zsh
 k9s/config.yml
+jimux-*
 
 # Let TPM manage tmux plugin submodules
 tmux/plugins/**

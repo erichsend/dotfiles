@@ -8,7 +8,7 @@ function _popList() {
 
 function _addToSprint() {
   _selectedLine=$(sed -n "${1}p" $JIMUX_SPRINT_FILE)
-  echo "Adding to Sprint $(echo $_selectedLine | jq .name)"
+  _logChange "$2 | Adding to Sprint $(echo $_selectedLine | jq .name)"
   jira sprint add $(echo $_selectedLine | jq .id) $2
 }
 
@@ -56,12 +56,11 @@ function jirepl() {
     B) _logChange "$key | Adding Component: billing-provisioning" && jira issue edit $key -Cbilling-provisioning --no-input ;;
     C) _logChange "$key | Closing Issue" && jira issue move $key "Resolved" ;;
     D) _logChange "$key | Adding Label: deprioritized" && jira issue edit $key -ldeprioritize --no-input ;;
-    G) _logChange "$key | Adding Component: ng-service-hub" && jira issue edit $key -Cng-service-hub --no-input ;;
     K) _logChange "$key | Adding Component: konnect-backend" && jira issue edit $key -Ckonnect-backend --no-input ;;
     N) _logChange "$key | Adding Label: needs-refinement" && jira issue edit $key -lneeds-refinement --no-input ;;
     P) _logChange "$key | Adding Label: prioritized" && jira issue edit $key -lprioritize --no-input ;;
     Q) _logChange "$key | Adding Component: sdet" && jira issue edit $key -Csdet --no-input ;;
-    R) _logChange "$key | Adding Component: runtime-manager" && jira issue edit $key -Cruntime-manager --no-input ;;
+    G) _logChange "$key | Adding Component: gateway-manager" && jira issue edit $key -Cgateway-manager --no-input ;;
     S) _logChange "$key | Adding Component: service-hub" && jira issue edit $key -Cservice-hub --no-input ;;
     U) _logChange "$key | Adding Component: konnect-ui" && jira issue edit $key -Ckonnect-ui --no-input ;;
     [0-9]) _addToSprint $REPLY $key ;;

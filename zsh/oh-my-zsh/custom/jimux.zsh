@@ -8,9 +8,8 @@ JIMUX_SPRINT_FILE="$JIMUX_DIR/sprints.out"
 JIRPL_USAGE=$(cat <<-END
 # Quick-Change Components (Add)
 (A)dmin-cx-tool    (B)illing-provisioning
-(R)untime-manager  (S)ervice-hub
+(G)ateway-manager  (S)ervice-hub
 (U)onnect-ui       (Q)sdet
-(G)ng-service-hub
 
 # Quick-Change Labels (Add)
 (K)onnect-backend

@@ -9,12 +9,6 @@ windows:
   panes:
   - focus: 'true'
     shell_command: nvim
-- window_name: lazyconf
-  layout: cf46,343x77,0,0,9
-  focus: 'true'
-  panes:
-  - focus: 'true'
-    shell_command: nvim ~/.config/nvim/
 - window_name: run
   layout: 64ee,343x77,0,0{241x77,0,0,10,101x77,242,0,13}
   panes:
