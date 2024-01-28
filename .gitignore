@@ -6,6 +6,7 @@ secrets.zsh
 volta.zsh
 k9s/config.yml
 jimux-*
+sprints.out
 
 # Let TPM manage tmux plugin submodules
 tmux/plugins/**
