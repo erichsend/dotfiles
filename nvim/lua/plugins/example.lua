@@ -130,16 +130,47 @@ return {
       },
     },
   },
+
+  { "towolf/vim-helm", ft = "helm" },
+
+  {
+    "someone-stole-my-name/yaml-companion.nvim",
+    ft = { "yaml" },
+    opts = {
+      builtin_matchers = {
+        kubernetes = { enabled = true },
+      },
+    },
+    dependencies = {
+      { "neovim/nvim-lspconfig" },
+      { "nvim-lua/plenary.nvim" },
+      { "nvim-telescope/telescope.nvim" },
+    },
+    config = function(_, opts)
+      local cfg = require("yaml-companion").setup(opts)
+      require("lspconfig")["yamlls"].setup(cfg)
+      require("telescope").load_extension("yaml_schema")
+    end,
+  },
+
   {
     "neovim/nvim-lspconfig",
+    event = "LazyFile",
     opts = {
       servers = {
-        helm_ls = {},
         yamlls = {
-          filetypes_exclude = { "helm" },
-          filetypes_include = {},
-          -- to fully override the default_config, change the below
-          -- filetypes = {}},
+          format = {
+            enabled = false,
+          },
+        },
+        helm_ls = {
+          settings = {
+            ["helm-ls"] = {
+              yamlls = {
+                path = "yaml-language-server",
+              },
+            },
+          },
         },
         tsserver = {
           keys = {
@@ -170,13 +201,7 @@ return {
           },
         },
       },
-      settings = {
-        yamlls = {
-          format = {
-            enable = false,
-          },
-        },
-      },
+      settings = {},
       setup = {
         eslint = function()
           require("lazyvim.util").lsp.on_attach(function(client)
@@ -187,39 +212,9 @@ return {
             end
           end)
         end,
-        yamlls = function(_, opts)
-          -- Neovim < 0.10 does not have dynamic registration for formatting
-          if vim.fn.has("nvim-0.10") == 0 then
-            require("lazyvim.util").lsp.on_attach(function(client, _)
-              if client.name == "yamlls" then
-                client.server_capabilities.documentFormattingProvider = false
-                if vim.bo[_].buftype ~= "" or vim.bo[_].filetype == "helm" then
-                  client.server_capabilities.documentPublishDiagnostics = false
-                end
-              end
-            end)
-          end
-          -- Apply filtetype include/exclude
-          local hls = require("lspconfig.server_configurations.yamlls")
-          opts.filetypes = opts.filetypes or {}
-
-          -- Add default filetypes
-          vim.list_extend(opts.filetypes, hls.default_config.filetypes)
-
-          -- Remove excluded filetypes
-          --- @param ft string
-          opts.filetypes = vim.tbl_filter(function(ft)
-            return not vim.tbl_contains(opts.filetypes_exclude or {}, ft)
-          end, opts.filetypes)
-
-          -- Add additional filetypes
-          vim.list_extend(opts.filetypes, opts.filetypes_include or {})
-        end,
       },
     },
   },
-
-  { "towolf/vim-helm" },
 
   {
     "christoomey/vim-tmux-navigator",
@@ -266,6 +261,44 @@ return {
         end,
         desc = "Search diagnostic with Google",
       },
+    },
+  },
+  {
+    "rcarriga/nvim-notify",
+    opts = {
+      background_colour = "#000000",
+    },
+  },
+  {
+    "jellydn/hurl.nvim",
+    dependencies = { "MunifTanjim/nui.nvim" },
+    ft = "hurl",
+    opts = {
+      -- Show debugging info
+      debug = false,
+      -- Show notification on run
+      show_notification = false,
+      -- Show response in popup or split
+      mode = "split",
+      -- Default formatter
+      formatters = {
+        json = { "jq" }, -- Make sure you have install jq in your system, e.g: brew install jq
+        html = {
+          "prettier", -- Make sure you have install prettier in your system, e.g: npm install -g prettier
+          "--parser",
+          "html",
+        },
+      },
+    },
+    keys = {
+      -- Run API request
+      { "<leader>A", "<cmd>HurlRunner<CR>", desc = "Run All requests" },
+      { "<leader>a", "<cmd>HurlRunnerAt<CR>", desc = "Run Api request" },
+      { "<leader>te", "<cmd>HurlRunnerToEntry<CR>", desc = "Run Api request to entry" },
+      { "<leader>tm", "<cmd>HurlToggleMode<CR>", desc = "Hurl Toggle Mode" },
+      { "<leader>tv", "<cmd>HurlVerbose<CR>", desc = "Run Api in verbose mode" },
+      -- Run Hurl request in visual mode
+      { "<leader>h", ":HurlRunner<CR>", desc = "Hurl Runner", mode = "v" },
     },
   },
 }
