@@ -8,9 +8,9 @@ if [ -f /opt/homebrew/opt/fzf/shell/completion.zsh ]; then
   source "/opt/homebrew/opt/fzf/shell/key-bindings.zsh" 2> /dev/null
 fi
 
-# Ubuntu
-if [ -f /usr/share/doc/fzf/examples/completion.zsh ]; then
-    . /usr/share/doc/fzf/examples/completion.zsh 2> /dev/null
-    . /usr/share/doc/fzf/examples/key-bindings.zsh 2> /dev/null
+# Git Installation with keybindings and completion
+if [ -f ~/.fzf.zsh ] 
+  PATH="${PATH}:~/.fzf/bin""
+  source ~/.fzf.zsh
 fi
 
