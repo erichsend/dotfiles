@@ -9,8 +9,6 @@ if [ -f /opt/homebrew/opt/fzf/shell/completion.zsh ]; then
 fi
 
 # Git Installation with keybindings and completion
-if [ -f ~/.fzf.zsh ] 
-  PATH="${PATH}:~/.fzf/bin""
+if [ -f ~/.fzf.zsh ]; then
   source ~/.fzf.zsh
 fi
-
