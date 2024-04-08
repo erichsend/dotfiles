@@ -1,21 +1,19 @@
-session_name: 'tools'
-start_directory: '~'
+session_name: "tools"
+start_directory: "~"
 options:
-  automatic-rename: 'off'
+  automatic-rename: "off"
 windows:
-- window_name: k9s
-  layout: 55bd,245x59,0,0[245x39,0,0,0,245x19,0,40,1]
-  panes:
-  - focus: 'true'
-    shell_command: k9s
-  - tl
-  focus: 'true'
-- window_name: note
-  panes:
-  - nvim
-  start_directory: '~/notes'
-- window_name: scratch
-  panes:
-  -
-  start_directory: '~/scratch/'
-
+  - window_name: k9s
+    layout: 55bd,245x59,0,0[245x39,0,0,0,245x19,0,40,1]
+    panes:
+      - focus: "true"
+        shell_command: k9s
+    focus: "true"
+  - window_name: note
+    panes:
+      - nvim
+    start_directory: "~/notes"
+  - window_name: scratch
+    panes:
+      -
+    start_directory: "~/scratch/"
