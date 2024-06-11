@@ -4,7 +4,8 @@ jenv.zsh
 kong.zsh
 secrets.zsh
 volta.zsh
-k9s/config.yml
+k9s/config.yaml
+k9s/aliases.yaml
 jimux-*
 sprints.out
 
